@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+postgres_data
 dist-ssr
 *.local
 */package-lock.json
