@@ -6,13 +6,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+# Modules and dependencies
 node_modules
 dist
+build
 postgres_data
 dist-ssr
 *.local
-*/package-lock.json
 package-lock.json
 # Editor directories and files
 .vscode/*
@@ -24,3 +24,6 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+# Database and environment
+Database
+.env

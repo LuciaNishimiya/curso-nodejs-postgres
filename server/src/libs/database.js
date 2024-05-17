@@ -7,7 +7,8 @@ export const db = new Sequelize(
   {
     host: process.env.DB_HOST || "localhost",
     port: process.env.DB_PORT || 5432,
-    dialect: process.env.DB_TYPE || "postgres",
+    dialect: process.env.DB_TYPE || "sqlite",
+    storage: process.env.DB_SQLITE_PATH || "Database/database.sqlite",
     logging: true,
   }
 );
