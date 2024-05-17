@@ -1,73 +1,45 @@
-import { pool } from "../libs/postgresql/pool.js";
+import { db } from "../libs/database.js";
 import boom from "@hapi/boom";
 export class ProductsService {
   constructor() {
-    this.pool = pool;
-    this.pool.on("error", (err) => console.error(err.message));
+    this.Products = db.models.Products;
   }
   async create(data) {
-    const { name, price, description, image } = data;
-    const query = `
-      INSERT INTO products (name, price, description , image)
-      VALUES ($1, $2, $3, $4)
-      RETURNING *
-    `;
-    const rta = await this.pool.query(query, [name, price, description, image]);
-    const newProduct = rta.rows[0];
-    return newProduct;
+    const result = await this.Products.create(data);
+    return result;
   }
 
   async get() {
-    const query = "SELECT * FROM products";
-    const rta = await this.pool.query(query);
-    return rta.rows;
+    const result = await this.Products.findAll();
+    return result;
   }
 
   async getById(id) {
-    const query = "SELECT * FROM products WHERE id = $1";
-    const rta = await this.pool.query(query, [id]);
-    const product = rta.rows[0];
-
-    if (!product) {
+    const result = await this.Products.findByPk(id);
+    if (!result) {
       throw boom.notFound("Product not found");
     }
-    if (product.isBlock) {
+    if (result.isBlock) {
       throw boom.conflict("Product is blocked");
     }
 
-    return product;
+    return result;
   }
 
   async update(id, changes) {
-    const query = `
-      UPDATE products
-      SET 
-        name = $1,
-        price = $2,
-        description = $3
-      WHERE id = $4
-      RETURNING *
-    `;
-
-    const { name, price, description } = changes;
-    const rta = await this.pool.query(query, [name, price, description, id]);
-    const updatedProduct = rta.rows[0];
-
-    if (!updatedProduct) {
+    const product = await this.Products.findByPk(id); 
+    if (!product) {
       throw boom.notFound("Product not found");
     }
-
-    return updatedProduct;
+    const result = await product.update(changes); 
+    return result;
   }
 
   async delete(id) {
-    const query = "DELETE FROM products WHERE id = $1";
-    const rta = await this.pool.query(query, [id]);
-
-    if (rta.rowCount === 0) {
+    const product = await this.Products.findByPk(id);
+    if (!product) {
       throw boom.notFound("Product not found");
     }
-
-    return { id };
+    return await product.destroy().id;
   }
 }
