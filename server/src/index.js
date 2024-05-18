@@ -10,7 +10,7 @@ import {
 import { docs } from "./docs/index.js";
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3000;
 
 app.use(json());
 
